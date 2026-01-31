@@ -1,0 +1,103 @@
+.App {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1A1E29 0%, #252b3b 50%, #1A1E29 100%);
+}
+
+.App-header {
+  background: #1A1E29;
+  color: #FFFFFF;
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  border-bottom: 2px solid rgba(46, 107, 240, 0.4);
+}
+
+.App-header h1 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #60a5fa;
+  letter-spacing: 0.02em;
+}
+
+.logout-btn {
+  background-color: #FFFFFF;
+  color: #6B7280;
+  border: 1px solid #D1D5DB;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: #D1D5DB;
+  color: #1A1E29;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 1rem;
+  border-radius: 5px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error-message button {
+  background: none;
+  border: none;
+  color: #c62828;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0 0.5rem;
+}
+
+.pdf-button-container {
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.pdf-btn {
+  background: #2E6BF0;
+  color: #FFFFFF;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  box-shadow: 0 2px 8px rgba(46, 107, 240, 0.4);
+}
+
+.pdf-btn:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(46, 107, 240, 0.5);
+}
+
+@media (max-width: 768px) {
+  .App-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .App-header h1 {
+    font-size: 1.4rem;
+  }
+
+  .container {
+    padding: 1rem;
+  }
+}
