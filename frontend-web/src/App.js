@@ -69,7 +69,7 @@ function AppContent() {
     }
   };
 
-  const loadInitialData = async () => {
+  const loadInitialData = useCallback(async () => {
     try {
       await Promise.all([
         loadSummary(),
@@ -79,7 +79,8 @@ function AppContent() {
     } catch (err) {
       setError('Failed to load data');
     }
-  };
+  }, []);
+
 
   const verifyAuth = useCallback(async (user, pass) => {
     try {
@@ -96,7 +97,8 @@ function AppContent() {
     } catch {
       return false;
     }
-  }, []);
+  }, [loadInitialData]);
+
 
 
   useEffect(() => {
