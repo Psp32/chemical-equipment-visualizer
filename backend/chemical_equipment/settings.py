@@ -8,6 +8,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'chemical-equipment-visualizer-vcel.onrender.com',
+    'chemical-equipment-visualizer-fosse.vercel.app',
     'localhost',
     '127.0.0.1',
 ]
@@ -96,7 +97,11 @@ REST_FRAMEWORK = {
 
 CORS_ALLOWED_ORIGINS = [
     'https://chemical-equipment-visualizer-fosse.vercel.app',
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
 ]
+
+CORS_ALLOW_ALL_ORIGINS = DEBUG
 
 CORS_ALLOW_CREDENTIALS = True
 

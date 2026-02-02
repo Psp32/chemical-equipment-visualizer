@@ -8,7 +8,13 @@ import Charts from './components/Charts';
 import History from './components/History';
 import Login from './components/Login';
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+    ? 'http://localhost:8000/api' 
+    : 'https://chemical-equipment-visualizer-vcel.onrender.com/api');
+
+console.log('API_BASE_URL:', API_BASE_URL);
+console.log('Hostname:', window.location.hostname);
 
 const getStoredCredentials = () => {
   try {
@@ -37,39 +43,72 @@ function AppContent() {
   const navigate = useNavigate();
 
   const getAuthHeaders = () => {
-    return {
+    const headers = {
       'Authorization': `Basic ${btoa(`${username}:${password}`)}`,
     };
+    console.log('Auth headers for user:', username);
+    return headers;
   };
 
-  const loadSummary = async () => {
+  const loadSummary = useCallback(async () => {
     try {
+      console.log('Loading summary from:', `${API_BASE_URL}/summary/`);
       const res = await fetch(`${API_BASE_URL}/summary/`, { headers: getAuthHeaders() });
-      setSummary(res.ok ? await res.json() : null);
+      console.log('Summary response status:', res.status);
+      if (res.ok) {
+        const data = await res.json();
+        console.log('Summary data:', data);
+        setSummary(data);
+      } else {
+        console.error('Summary failed:', res.status);
+        setSummary(null);
+      }
     } catch (err) {
       console.error('Failed to load summary:', err);
+      setSummary(null);
     }
-  };
+  }, [username, password]);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
+      console.log('Loading data from:', `${API_BASE_URL}/data/`);
       const res = await fetch(`${API_BASE_URL}/data/`, { headers: getAuthHeaders() });
-      setEquipmentData(res.ok ? await res.json() : []);
+      console.log('Data response status:', res.status);
+      if (res.ok) {
+        const data = await res.json();
+        console.log('Equipment data:', data);
+        setEquipmentData(data);
+      } else {
+        console.error('Data failed:', res.status);
+        setEquipmentData([]);
+      }
     } catch (err) {
       console.error('Failed to load data:', err);
+      setEquipmentData([]);
     }
-  };
+  }, [username, password]);
 
-  const loadHistory = async () => {
+  const loadHistory = useCallback(async () => {
     try {
+      console.log('Loading history from:', `${API_BASE_URL}/history/`);
       const res = await fetch(`${API_BASE_URL}/history/`, { headers: getAuthHeaders() });
-      if (res.ok) setHistory(await res.json());
+      console.log('History response status:', res.status);
+      if (res.ok) {
+        const data = await res.json();
+        console.log('History data:', data);
+        setHistory(data);
+      } else {
+        console.error('History failed:', res.status);
+        setHistory([]);
+      }
     } catch (err) {
       console.error('Failed to load history:', err);
+      setHistory([]);
     }
-  };
+  }, [username, password]);
 
   const loadInitialData = useCallback(async () => {
+    console.log('Loading initial data with user:', username);
     try {
       await Promise.all([
         loadSummary(),
@@ -79,7 +118,7 @@ function AppContent() {
     } catch (err) {
       setError('Failed to load data');
     }
-  }, []);
+  }, [username, password, loadSummary, loadData, loadHistory]);
 
 
   const verifyAuth = useCallback(async (user, pass) => {
@@ -135,6 +174,9 @@ function AppContent() {
     setLoading(true);
     setError(null);
 
+    console.log('Uploading file:', file);
+    console.log('API URL:', `${API_BASE_URL}/upload/`);
+
     const formData = new FormData();
     formData.append('file', file);
 
@@ -145,14 +187,22 @@ function AppContent() {
         body: formData,
       });
 
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
+
       if (response.ok) {
-        await response.json();
+        const result = await response.json();
+        console.log('Upload successful:', result);
+        // Add a small delay to ensure backend has processed the data
+        await new Promise(resolve => setTimeout(resolve, 500));
         await loadInitialData();
       } else {
         const errorData = await response.json();
+        console.error('Upload failed:', errorData);
         setError(errorData.error || 'Upload failed');
       }
     } catch (err) {
+      console.error('Upload error:', err);
       setError('Upload failed. Please check your connection.');
     } finally {
       setLoading(false);

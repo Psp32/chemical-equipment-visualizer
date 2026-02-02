@@ -30,6 +30,10 @@ def _get_dataset(dataset_id=None):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def upload_csv(request):
+    print(f"Upload request received: {request.method}")
+    print(f"Files: {request.FILES}")
+    print(f"Headers: {request.headers}")
+    
     if 'file' not in request.FILES:
         return Response({'error': 'No file provided'}, status=status.HTTP_400_BAD_REQUEST)
     
