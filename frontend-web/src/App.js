@@ -8,7 +8,7 @@ import Charts from './components/Charts';
 import History from './components/History';
 import Login from './components/Login';
 
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 const getStoredCredentials = () => {
   try {

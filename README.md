@@ -104,6 +104,14 @@ npm install
 npm start
 ```
 
+### Environment Setup (Frontend Web)
+
+Create a `.env` file inside `frontend-web` using the example below:
+
+```env
+REACT_APP_API_BASE_URL=http://localhost:8000/api
+
+
 The web application will open at `http://localhost:3000`
 
 ### 3. Desktop Frontend Setup (PyQt5)
