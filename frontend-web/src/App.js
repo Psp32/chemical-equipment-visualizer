@@ -81,7 +81,7 @@ function AppContent() {
     }
   };
 
-  const verifyAuth = async (user, pass) => {
+  const verifyAuth = useCallback(async (user, pass) => {
     try {
       const res = await fetch(`${API_BASE_URL}/history/`, {
         headers: { 'Authorization': `Basic ${btoa(`${user}:${pass}`)}` },
@@ -96,7 +96,8 @@ function AppContent() {
     } catch {
       return false;
     }
-  };
+  }, []);
+
 
   useEffect(() => {
     const stored = getStoredCredentials();
@@ -105,7 +106,8 @@ function AppContent() {
       setPassword(stored.password);
       verifyAuth(stored.username, stored.password);
     }
-  }, []);
+  }, [verifyAuth]);
+
 
   const handleLogin = useCallback(async (e) => {
     e.preventDefault();
@@ -113,7 +115,8 @@ function AppContent() {
     const ok = await verifyAuth(username, password);
     if (ok) navigate('/dashboard');
     else setError('Invalid credentials. Please check if the backend is running and credentials are correct.');
-  }, [username, password, navigate]);
+  }, [username, password, navigate, verifyAuth]);
+
 
   const handleLogout = () => {
     setIsAuthenticated(false);
@@ -141,7 +144,7 @@ function AppContent() {
       });
 
       if (response.ok) {
-        const data = await response.json();
+        await response.json();
         await loadInitialData();
       } else {
         const errorData = await response.json();
