@@ -29,7 +29,6 @@ function AppContent() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [currentDataset, setCurrentDataset] = useState(null);
   const [equipmentData, setEquipmentData] = useState([]);
   const [summary, setSummary] = useState(null);
   const [history, setHistory] = useState([]);
@@ -120,7 +119,6 @@ function AppContent() {
     setIsAuthenticated(false);
     setUsername('');
     setPassword('');
-    setCurrentDataset(null);
     setEquipmentData([]);
     setSummary(null);
     setHistory([]);
@@ -144,7 +142,6 @@ function AppContent() {
 
       if (response.ok) {
         const data = await response.json();
-        setCurrentDataset(data);
         await loadInitialData();
       } else {
         const errorData = await response.json();
@@ -218,7 +215,6 @@ function AppContent() {
               const summaryRes = await fetch(`${API_BASE_URL}/summary/${datasetId}/`, { headers });
               if (dataRes.ok) setEquipmentData(await dataRes.json());
               if (summaryRes.ok) setSummary(await summaryRes.json());
-              setCurrentDataset({ id: datasetId });
             }}
             onGeneratePDF={handleGeneratePDF}
             getAuthHeaders={getAuthHeaders}
