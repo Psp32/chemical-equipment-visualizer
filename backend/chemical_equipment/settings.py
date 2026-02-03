@@ -1,17 +1,15 @@
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-dev-key-change-in-production'
-DEBUG = True
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-dev-key-change-in-production')
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = [
-    'chemical-equipment-visualizer-vcel.onrender.com',
-    'chemical-equipment-visualizer-fosse.vercel.app',
-    'localhost',
-    '127.0.0.1',
-]
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -95,14 +93,13 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 100,
 }
 
-CORS_ALLOWED_ORIGINS = [
-    'https://chemical-equipment-visualizer-fosse.vercel.app',
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-]
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:3000,http://127.0.0.1:3000').split(',')
+
+if not DEBUG:
+    production_origins = os.getenv('PRODUCTION_CORS_ORIGINS', '').split(',')
+    CORS_ALLOWED_ORIGINS.extend([origin for origin in production_origins if origin])
 
 CORS_ALLOW_ALL_ORIGINS = DEBUG
-
 CORS_ALLOW_CREDENTIALS = True
 
 from corsheaders.defaults import default_headers
