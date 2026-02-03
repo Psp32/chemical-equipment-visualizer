@@ -5,6 +5,9 @@ export default function Login({ username, password, setUsername, setPassword, ha
   return (
     <div className="login-container">
       <div className="login-box">
+        <div className="server-notice">
+          ⚠ NOTICE: IF UNRESPONSIVE, PLEASE WAIT ~50s FOR SERVER WAKE-UP
+        </div>
         <h2>Chemical Equipment Visualizer</h2>
         <p className="login-subtitle">Please login to continue</p>
         <form onSubmit={handleLogin}>

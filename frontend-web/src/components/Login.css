@@ -17,6 +17,18 @@
   border: 1px solid #D1D5DB;
 }
 
+.server-notice {
+  background: linear-gradient(135deg, #031e65 0%, #021a5d 100%);
+  color: white;
+  padding: 12px 16px;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 .login-box h2 {
   text-align: center;
   color: #1A1E29;
