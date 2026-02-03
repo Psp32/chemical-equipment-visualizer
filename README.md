@@ -77,6 +77,10 @@ source venv/bin/activate
 # Install remaining dependencies
 pip install -r requirements.txt
 
+# Create environment file from template
+cp .env.example .env
+# Edit .env with your configuration (optional for development)
+
 # Run migrations
 python manage.py migrate
 
@@ -232,6 +236,9 @@ All endpoints require Basic Authentication and are served by the Django backend 
 - All API endpoints require Basic Authentication
 - PDF reports include summary statistics, type distribution, and full equipment data
 - Both frontends consume the same Django REST API
+- Environment variables are used for secure configuration management
+- `.env.example` provides template for required environment variables
+- Never commit `.env` file to version control
 
 ## Submission Checklist
 
