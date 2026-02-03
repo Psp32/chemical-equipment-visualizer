@@ -37,6 +37,9 @@ chemical-equipment-visualizer/
 **History Management** - Store and view last 5 uploaded datasets  
 **PDF Report Generation** - Generate comprehensive PDF reports  
 **Basic Authentication** - Secure access with username/password  
+**Dataset Comparison** - Compare two datasets side-by-side with detailed metrics  
+**Enhanced Charts** - Improved visualizations with consistent color schemes  
+**Paginated Data Table** - Clean data display with pagination for large datasets  
 
 ## Tech Stack
 
@@ -145,6 +148,7 @@ python main.py
 4. View summary statistics, charts, and data table
 5. Click "Generate PDF Report" to download a PDF
 6. View upload history in the History tab
+7. Use the Comparison tab to compare two datasets side-by-side
 
 ### Desktop Application
 
@@ -154,6 +158,7 @@ python main.py
 4. View summary statistics, charts, and data table in tabs
 5. Click "Generate PDF Report" to save a PDF
 6. View upload history in the History tab
+7. Use the Compare Datasets tab for detailed dataset comparisons
 
 ### CSV File Format
 
