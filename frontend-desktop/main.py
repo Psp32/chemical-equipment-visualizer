@@ -21,11 +21,16 @@ from PyQt5.QtWidgets import (
     QTabWidget,
     QGroupBox,
     QGridLayout,
+    QComboBox,
+    QScrollArea,
+    QFrame,
+    QSplitter,
 )
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
 from PyQt5.QtGui import QFont
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
+from comparison_widget import ComparisonWidget
 
 API_BASE_URL = 'http://localhost:8000/api'
 
@@ -159,28 +164,35 @@ class ChartWidget(QWidget):
     def plot_pie(self, labels, values, title):
         self.figure.clear()
         ax = self.figure.add_subplot(111)
-        ax.pie(values, labels=labels, autopct='%1.1f%%', startangle=90)
-        ax.set_title(title, fontsize=14, fontweight='bold')
+        colors = ['#2E6BF0', '#2563eb', '#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#dbeafe', '#eff6ff', '#f0f9ff']
+        ax.pie(values, labels=labels, autopct='%1.1f%%', startangle=90, colors=colors[:len(labels)])
+        ax.set_title(title, fontsize=14, fontweight='bold', color='#1A1E29')
         self.canvas.draw()
 
     def plot_bar(self, labels, values, title, ylabel):
         self.figure.clear()
         ax = self.figure.add_subplot(111)
-        ax.bar(labels, values, color='#2E6BF0')
-        ax.set_title(title, fontsize=14, fontweight='bold')
-        ax.set_ylabel(ylabel)
-        ax.tick_params(axis='x', rotation=45)
+        ax.bar(labels, values, color='#2E6BF0', edgecolor='#1d4ed8', alpha=0.8)
+        ax.set_title(title, fontsize=14, fontweight='bold', color='#1A1E29')
+        ax.set_ylabel(ylabel, color='#1A1E29')
+        ax.tick_params(axis='x', rotation=45, colors='#1A1E29')
+        ax.grid(True, alpha=0.3, color='#D1D5DB')
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
         self.figure.tight_layout()
         self.canvas.draw()
 
     def plot_line(self, labels, values, title, ylabel, color='#2E6BF0'):
         self.figure.clear()
         ax = self.figure.add_subplot(111)
-        ax.plot(labels, values, marker='o', color=color, linewidth=2, markersize=6)
-        ax.set_title(title, fontsize=14, fontweight='bold')
-        ax.set_ylabel(ylabel)
-        ax.grid(True, alpha=0.3)
-        ax.tick_params(axis='x', rotation=45)
+        ax.plot(labels, values, marker='o', color=color, linewidth=2, markersize=6, markerfacecolor='white', markeredgewidth=2)
+        ax.set_title(title, fontsize=14, fontweight='bold', color='#1A1E29')
+        ax.set_ylabel(ylabel, color='#1A1E29')
+        ax.grid(True, alpha=0.3, color='#D1D5DB')
+        ax.tick_params(axis='x', rotation=45, colors='#1A1E29')
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.fill_between(labels, values, alpha=0.1, color=color)
         self.figure.tight_layout()
         self.canvas.draw()
 
@@ -256,7 +268,32 @@ class MainWindow(QMainWindow):
             'Equipment Name', 'Type', 'Flowrate', 'Pressure', 'Temperature'
         ])
         self.data_table.horizontalHeader().setStretchLastSection(True)
+        self.data_table.setAlternatingRowColors(True)
+        self.data_table.setSelectionBehavior(QTableWidget.SelectRows)
+        self.data_table.setSortingEnabled(True)
+        self.data_table.setMaximumHeight(120)
+        self.data_table.setFixedHeight(120)
         table_layout.addWidget(self.data_table)
+        
+        nav_layout = QHBoxLayout()
+        self.prev_btn = QPushButton('← Previous')
+        self.next_btn = QPushButton('Next →')
+        self.prev_btn.clicked.connect(self.show_previous_rows)
+        self.next_btn.clicked.connect(self.show_next_rows)
+        self.prev_btn.setEnabled(False)
+        self.next_btn.setEnabled(False)
+        
+        self.row_label = QLabel('Showing 0-0 of 0')
+        self.row_label.setAlignment(Qt.AlignCenter)
+        
+        nav_layout.addWidget(self.prev_btn)
+        nav_layout.addWidget(self.row_label)
+        nav_layout.addWidget(self.next_btn)
+        table_layout.addLayout(nav_layout)
+        
+        self.current_row_start = 0
+        self.rows_per_page = 3
+        
         table_group.setLayout(table_layout)
         self.main_layout.addWidget(table_group)
 
@@ -290,6 +327,10 @@ class MainWindow(QMainWindow):
         history_layout.addWidget(self.history_table)
         self.history_tab.setLayout(history_layout)
         self.tabs.addTab(self.history_tab, 'History')
+
+        self.comparison_widget = ComparisonWidget()
+        self.comparison_widget.set_auth_header(self.auth_header)
+        self.tabs.addTab(self.comparison_widget, 'Compare Datasets')
 
     def show_login(self):
         login_dialog = LoginDialog(self)
@@ -363,15 +404,6 @@ class MainWindow(QMainWindow):
         except Exception as e:
             QMessageBox.warning(self, 'Error', f'Failed to load data: {str(e)}')
 
-    def load_history(self):
-        try:
-            response = requests.get(f'{API_BASE_URL}/history/', headers=self.auth_header)
-            if response.status_code == 200:
-                history_data = response.json()
-                self.update_history_table(history_data)
-        except Exception as e:
-            QMessageBox.warning(self, 'Error', f'Failed to load history: {str(e)}')
-
     def update_summary_display(self):
         while self.summary_layout.count():
             child = self.summary_layout.takeAt(0)
@@ -396,14 +428,43 @@ class MainWindow(QMainWindow):
             self.summary_layout.addWidget(value_widget, i // 2, (i % 2) * 2 + 1)
 
     def update_data_table(self):
-        self.data_table.setRowCount(len(self.current_data))
-        for row, item in enumerate(self.current_data):
-            self.data_table.setItem(row, 0, QTableWidgetItem(item['equipment_name']))
-            self.data_table.setItem(row, 1, QTableWidgetItem(item['equipment_type']))
-            self.data_table.setItem(row, 2, QTableWidgetItem(f"{item['flowrate']:.2f}"))
-            self.data_table.setItem(row, 3, QTableWidgetItem(f"{item['pressure']:.2f}"))
-            self.data_table.setItem(row, 4, QTableWidgetItem(f"{item['temperature']:.2f}"))
-        self.data_table.resizeColumnsToContents()
+        if not self.current_data:
+            return
+            
+        total_rows = len(self.current_data)
+        end_row = min(self.current_row_start + self.rows_per_page, total_rows)
+        
+        self.data_table.setRowCount(end_row - self.current_row_start)
+        
+        for i, row_idx in enumerate(range(self.current_row_start, end_row)):
+            item = self.current_data[row_idx]
+            self.data_table.setItem(i, 0, QTableWidgetItem(item['equipment_name']))
+            self.data_table.setItem(i, 1, QTableWidgetItem(item['equipment_type']))
+            self.data_table.setItem(i, 2, QTableWidgetItem(f"{item['flowrate']:.2f}"))
+            self.data_table.setItem(i, 3, QTableWidgetItem(f"{item['pressure']:.2f}"))
+            self.data_table.setItem(i, 4, QTableWidgetItem(f"{item['temperature']:.2f}"))
+        
+        self.prev_btn.setEnabled(self.current_row_start > 0)
+        self.next_btn.setEnabled(end_row < total_rows)
+        self.row_label.setText(f"Showing {self.current_row_start + 1}-{end_row} of {total_rows}")
+        
+        header = self.data_table.horizontalHeader()
+        header.setSectionResizeMode(0, 1)
+        header.setSectionResizeMode(1, 2) 
+        header.setSectionResizeMode(2, 3)
+        header.setSectionResizeMode(3, 3)
+        header.setSectionResizeMode(4, 3)
+
+    def show_previous_rows(self):
+        if self.current_row_start > 0:
+            self.current_row_start = max(0, self.current_row_start - self.rows_per_page)
+            self.update_data_table()
+
+    def show_next_rows(self):
+        total_rows = len(self.current_data)
+        if self.current_row_start + self.rows_per_page < total_rows:
+            self.current_row_start += self.rows_per_page
+            self.update_data_table()
 
     def update_charts(self):
         if not self.current_data or not self.current_summary:
@@ -439,6 +500,18 @@ class MainWindow(QMainWindow):
             self.history_table.setItem(row, 4, QTableWidgetItem(f"{item['avg_pressure']:.2f}"))
             self.history_table.setItem(row, 5, QTableWidgetItem(f"{item['avg_temperature']:.2f}"))
         self.history_table.resizeColumnsToContents()
+
+    def load_history(self):
+        try:
+            response = requests.get(f'{API_BASE_URL}/history/', headers=self.auth_header)
+            if response.status_code == 200:
+                history_data = response.json()
+                self.update_history_table(history_data)
+
+                if hasattr(self, 'comparison_widget'):
+                    self.comparison_widget.load_history(history_data)
+        except Exception as e:
+            QMessageBox.warning(self, 'Error', f'Failed to load history: {str(e)}')
 
     def on_history_item_double_clicked(self, index):
         self.load_summary()
