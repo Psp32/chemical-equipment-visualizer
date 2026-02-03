@@ -43,6 +43,50 @@
   padding: 2rem;
 }
 
+.nav-tabs {
+  display: flex;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #e5e7eb;
+  background: white;
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+}
+
+.nav-tab {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  background: transparent;
+  border: none;
+  color: #6B7280;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-bottom: 3px solid transparent;
+  position: relative;
+}
+
+.nav-tab:hover {
+  background: rgba(46, 107, 240, 0.05);
+  color: #2E6BF0;
+}
+
+.nav-tab.active {
+  color: #2E6BF0;
+  background: rgba(46, 107, 240, 0.1);
+  border-bottom-color: #2E6BF0;
+}
+
+.nav-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #2E6BF0;
+}
+
 .error-message {
   background-color: #ffebee;
   color: #c62828;
@@ -99,5 +143,18 @@
 
   .container {
     padding: 1rem;
+  }
+
+  .nav-tabs {
+    flex-direction: column;
+  }
+  
+  .nav-tab {
+    border-bottom: 1px solid #e5e7eb;
+    border-bottom-color: transparent;
+  }
+  
+  .nav-tab.active {
+    border-bottom-color: transparent;
   }
 }

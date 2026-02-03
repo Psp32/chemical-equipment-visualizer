@@ -6,6 +6,7 @@ import DataTable from './components/DataTable';
 import SummaryStats from './components/SummaryStats';
 import Charts from './components/Charts';
 import History from './components/History';
+import Comparison from './components/Comparison';
 import Login from './components/Login';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 
@@ -40,6 +41,7 @@ function AppContent() {
   const [history, setHistory] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [activeView, setActiveView] = useState('dashboard');
   const navigate = useNavigate();
 
   const getAuthHeaders = () => {
@@ -247,33 +249,68 @@ function AppContent() {
             </div>
           )}
 
-          <FileUpload onUpload={handleFileUpload} loading={loading} />
+          <div className="nav-tabs">
+            <button 
+              className={`nav-tab ${activeView === 'dashboard' ? 'active' : ''}`}
+              onClick={() => setActiveView('dashboard')}
+            >
+              Dashboard
+            </button>
+            <button 
+              className={`nav-tab ${activeView === 'comparison' ? 'active' : ''}`}
+              onClick={() => setActiveView('comparison')}
+            >
+              Compare Datasets
+            </button>
+            <button 
+              className={`nav-tab ${activeView === 'history' ? 'active' : ''}`}
+              onClick={() => setActiveView('history')}
+            >
+              History
+            </button>
+          </div>
 
-          {summary && (
+          {activeView === 'dashboard' && (
             <>
-              <SummaryStats summary={summary} />
-              <div className="pdf-button-container">
-                <button onClick={() => handleGeneratePDF()} className="pdf-btn">
-                  Generate PDF Report
-                </button>
-              </div>
-              <Charts data={equipmentData} summary={summary} />
-              <DataTable data={equipmentData} />
+              <FileUpload onUpload={handleFileUpload} loading={loading} />
+
+              {summary && (
+                <>
+                  <SummaryStats summary={summary} />
+                  <div className="pdf-button-container">
+                    <button onClick={() => handleGeneratePDF()} className="pdf-btn">
+                      Generate PDF Report
+                    </button>
+                  </div>
+                  <Charts data={equipmentData} summary={summary} />
+                  <DataTable data={equipmentData} />
+                </>
+              )}
             </>
           )}
 
-          <History
-            history={history}
-            onSelectDataset={async (datasetId) => {
-              const headers = getAuthHeaders();
-              const dataRes = await fetch(`${API_BASE_URL}/data/${datasetId}/`, { headers });
-              const summaryRes = await fetch(`${API_BASE_URL}/summary/${datasetId}/`, { headers });
-              if (dataRes.ok) setEquipmentData(await dataRes.json());
-              if (summaryRes.ok) setSummary(await summaryRes.json());
-            }}
-            onGeneratePDF={handleGeneratePDF}
-            getAuthHeaders={getAuthHeaders}
-          />
+          {activeView === 'comparison' && (
+            <Comparison 
+              history={history} 
+              getAuthHeaders={getAuthHeaders}
+            />
+          )}
+
+          {activeView === 'history' && (
+            <History
+              history={history}
+              onSelectDataset={async (datasetId) => {
+                const headers = getAuthHeaders();
+                const dataRes = await fetch(`${API_BASE_URL}/data/${datasetId}/`, { headers });
+                const summaryRes = await fetch(`${API_BASE_URL}/summary/${datasetId}/`, { headers });
+                if (dataRes.ok) setEquipmentData(await dataRes.json());
+                if (summaryRes.ok) setSummary(await summaryRes.json());
+                setActiveView('dashboard'); // Switch to dashboard after selecting a dataset
+              }}
+              onGeneratePDF={handleGeneratePDF}
+              getAuthHeaders={getAuthHeaders}
+            />
+          )}
         </div>
       </div>
     );
