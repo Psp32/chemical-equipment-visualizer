@@ -41,6 +41,26 @@ chemical-equipment-visualizer/
 **Enhanced Charts** - Improved visualizations with consistent color schemes  
 **Paginated Data Table** - Clean data display with pagination for large datasets  
 
+## 📸 Project Showcase
+
+<div align="center">
+
+### Application Interface Gallery
+
+| Authentication | Dashboard | Dataset Analytics |
+|:---:|:---:|:---:|
+| <img src="project_gallery/authentication.png" alt="Authentication" width="250"> | <img src="project_gallery/dashboard.png" alt="Dashboard" width="250"> | <img src="project_gallery/analytics.png" alt="Analytics" width="250"> |
+| **Login Screen** | **Main Dashboard** | **Data Analytics** |
+
+| Dataset Comparison | Comparison Analytics | History |
+|:---:|:---:|:---:|
+| <img src="project_gallery/comparison.png" alt="Comparison" width="250"> | <img src="project_gallery/comparison-analytics.png" alt="Comparison Analytics" width="250"> | <img src="project_gallery/history.png" alt="History" width="250"> |
+| **Compare Datasets** | **Comparison Metrics** | **Upload History** |
+
+</div>
+
+> **Note**: All screenshots are stored in the `project_gallery/` directory showcasing the complete application workflow.
+
 ## Tech Stack
 
 - **Backend**: Python Django + Django REST Framework
