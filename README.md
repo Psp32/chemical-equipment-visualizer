@@ -41,25 +41,48 @@ chemical-equipment-visualizer/
 **Enhanced Charts** - Improved visualizations with consistent color schemes  
 **Paginated Data Table** - Clean data display with pagination for large datasets  
 
-## 📸 Project Showcase
+## Project Gallery
 
-<div align="center">
+A comprehensive view of the system's capabilities.
 
-### Application Interface Gallery
+<table width="100%" style="border-collapse: separate; border-spacing: 10px;">
+  <tr>
+    <td width="33%" align="center" style="border: 2px solid #848484ff; padding: 10px;">
+      <img src="project_gallery/auth.png" width="100%" alt="Login Page">
+      <br />
+      <strong>Authentication</strong>
+    </td>
+    <td width="33%" align="center" style="border: 2px solid #848484ff; padding: 10px;">
+      <img src="project_gallery/dashboard.png" width="100%" alt="Dashboard">
+      <br />
+      <strong>Dashboard</strong>
+    </td>
+    <td width="33%" align="center" style="border: 2px solid #848484ff; padding: 10px;">
+      <img src="project_gallery/analytics.png" width="100%" alt="Data Visualization">
+      <br />
+      <strong>Data Analytics</strong>
+    </td>
+  </tr>
+  <tr>
+    <td width="33%" align="center" style="border: 2px solid #848484ff; padding: 10px;">
+      <img src="project_gallery/dataset_compare.png" width="100%" alt="Comparison">
+      <br />
+      <strong>Dataset Comparison</strong>
+    </td>
+    <td width="33%" align="center" style="border: 2px solid #848484ff; padding: 10px;">
+      <img src="project_gallery/compared_analytics.png" width="100%" alt="Comparison Analytics">
+      <br />
+      <strong>Comparison Analytics</strong>
+    </td>
+    <td width="33%" align="center" style="border: 2px solid #848484ff; padding: 10px;">
+      <img src="project_gallery/history.png" width="100%" alt="History">
+      <br />
+      <strong>Upload History</strong>
+    </td>
+  </tr>
+</table>
 
-| Authentication | Dashboard | Dataset Analytics |
-|:---:|:---:|:---:|
-| <img src="project_gallery/authentication.png" alt="Authentication" width="250"> | <img src="project_gallery/dashboard.png" alt="Dashboard" width="250"> | <img src="project_gallery/analytics.png" alt="Analytics" width="250"> |
-| **Login Screen** | **Main Dashboard** | **Data Analytics** |
-
-| Dataset Comparison | Comparison Analytics | History |
-|:---:|:---:|:---:|
-| <img src="project_gallery/comparison.png" alt="Comparison" width="250"> | <img src="project_gallery/comparison-analytics.png" alt="Comparison Analytics" width="250"> | <img src="project_gallery/history.png" alt="History" width="250"> |
-| **Compare Datasets** | **Comparison Metrics** | **Upload History** |
-
-</div>
-
-> **Note**: All screenshots are stored in the `project_gallery/` directory showcasing the complete application workflow.
+---
 
 ## Tech Stack
 
